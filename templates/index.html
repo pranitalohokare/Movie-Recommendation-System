@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Movie Recommender</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        .card {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        /* POPUP */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .popup button {
+            padding: 8px 12px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Header -->
+    <header class="header">
+        <h1>🎬 CineMatch</h1>
+
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search for a movie...">
+            <button onclick="getRecommendations()">Search</button>
+        </div>
+
+        <div id="suggestions" class="suggestions"></div>
+    </header>
+
+    <!-- Trending -->
+    <section>
+        <h2>🔥 Trending Movies</h2>
+        <div id="trending" class="grid"></div>
+    </section>
+
+    <!-- Recommendations -->
+    <section>
+        <h2>🎯 Recommended For You</h2>
+        <div id="results" class="grid"></div>
+    </section>
+
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">❌</span>
+        <h3 id="movieTitle"></h3>
+        <button id="trailerBtn">▶ Watch Trailer</button>
+    </div>
+</div>
+
+<script>
+
+let selectedMovie = "";
+let currentTrailer = "";
+
+// ----------------------
+// SEARCH SUGGESTIONS
+// ----------------------
+document.getElementById("search").addEventListener("input", async function() {
+
+    let query = this.value;
+    if(query.length < 2) return;
+
+    let res = await fetch(`/api/search?q=${query}`);
+    let data = await res.json();
+
+    let suggestions = document.getElementById("suggestions");
+    suggestions.innerHTML = "";
+
+    data.forEach(movie => {
+        let div = document.createElement("div");
+        div.innerText = movie;
+
+        div.onclick = () => {
+            selectedMovie = movie;
+            document.getElementById("search").value = movie;
+            suggestions.innerHTML = "";
+        };
+
+        suggestions.appendChild(div);
+    });
+});
+
+// ----------------------
+// RECOMMENDATIONS
+// ----------------------
+async function getRecommendations() {
+
+    if(!selectedMovie){
+        alert("Please select a movie");
+        return;
+    }
+
+    let res = await fetch('/api/recommend', {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({movie: selectedMovie})
+    });
+
+    let data = await res.json();
+    let results = document.getElementById("results");
+    results.innerHTML = "";
+
+    if(data.error){
+        results.innerHTML = `<p>${data.error}</p>`;
+        return;
+    }
+
+    data.forEach(m => {
+
+        results.innerHTML += `
+        <div class="card" onclick="openPopup('${m.title}', '${m.trailer}')">
+            <img src="${m.poster}" />
+            <div class="card-body">
+                <p>${m.title}</p>
+            </div>
+        </div>`;
+    });
+}
+
+// ----------------------
+// TRENDING
+// ----------------------
+async function loadTrending() {
+
+    let res = await fetch('/api/trending');
+    let data = await res.json();
+
+    let trending = document.getElementById("trending");
+
+    data.forEach(m => {
+
+        trending.innerHTML += `
+        <div class="card" onclick="openPopup('${m.title}', '${m.trailer}')">
+            <img src="${m.poster}" />
+            <div class="card-body">
+                <p>${m.title}</p>
+            </div>
+        </div>`;
+    });
+}
+
+// ----------------------
+// POPUP TRAILER
+// ----------------------
+function openPopup(title, trailer) {
+
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("movieTitle").innerText = title;
+
+    currentTrailer = trailer;
+
+    document.getElementById("trailerBtn").onclick = function() {
+        window.open(currentTrailer, "_blank");
+    };
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+loadTrending();
+
+</script>
+
+</body>
+</html>
