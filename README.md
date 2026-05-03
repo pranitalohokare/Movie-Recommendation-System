@@ -156,6 +156,11 @@ http://127.0.0.1:5000
 * Frontend: HTML, CSS, JavaScript
 * Machine Learning: Scikit-learn
 * API: OMDb API
+Sreenshots:
+<img width="959" height="454" alt="image" src="https://github.com/user-attachments/assets/9a2a3ca3-b786-4977-9a41-29f2527d17eb" />
+<img width="975" height="281" alt="image" src="https://github.com/user-attachments/assets/0bf3dcdf-cc48-40b4-8cc6-dbbcca5c5a39" />
+<img width="981" height="473" alt="image" src="https://github.com/user-attachments/assets/b8aa877d-d963-4b5e-b817-4a829899ea50" />
+<img width="975" height="451" alt="image" src="https://github.com/user-attachments/assets/9177d0cf-e16f-4178-a584-eb905eac114d" />
 
 ---
 
