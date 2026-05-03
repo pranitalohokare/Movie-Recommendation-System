@@ -63,7 +63,7 @@ movie-recommendation/
 
 ### 1. Clone Repository
 
-git clone https://github.com/your-username/movie-recommendation.git
+git clone https://github.com/pranitalohokare/movie-recommendation.git
 cd movie-recommendation
 
 ---
@@ -174,7 +174,7 @@ This project demonstrates how machine learning can be used to build intelligent 
 
 ## 📬 Contact
 
-Name: Your Name
-Email: [your-email@example.com](mailto:your-email@example.com)
+Name: Pranita Lohokare
+Email: Mailto:pranitalohokare02@gmail.com
 
 ---
